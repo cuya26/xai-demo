@@ -1,0 +1,27 @@
+version: '3.1'
+services:
+    frontend:
+        image: xai-demo-frontend:latest
+        build:
+            context: ./frontend/
+            dockerfile: Dockerfile
+        volumes:
+            - ./frontend/:/usr/src/app/
+        container_name: xai-demo-frontend
+        ports:
+            - 8080:8080
+        restart: always
+        command: sh -c "npm install && quasar dev"
+    backend:
+        build:
+            context: ./backend/
+            dockerfile: Dockerfile
+        image: backend:latest
+        container_name: xai-demo-backend
+        volumes:
+            - ./backend/:/workspace/
+        environment:
+            - PYTHONUNBUFFERED=1
+        ports:
+            - 5003:5003
+        restart: always

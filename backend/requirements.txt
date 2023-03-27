@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+python-dotenv==0.19.1
+# transformers
+# torch
+# captum
+pdftotext
+python-multipart
