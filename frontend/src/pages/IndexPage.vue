@@ -38,6 +38,7 @@
                     text-color="primary"
                     :options="[
                       {label: 'PDF', value: 'pdf'},
+                      {label: 'REGIONS', value: 'regions'},
                       {label: 'TEXT', value: 'edit'}
                     ]"
                   />
@@ -71,6 +72,13 @@
                     style="min-height: 560px;width: 100%"
                     class=""
                     v-if="inputMode==='pdf'"
+                    type="application/pdf"
+                  />
+                  <embed
+                    :src="dropzoneURL2"
+                    style="min-height: 560px;width: 100%"
+                    class=""
+                    v-if="inputMode === 'regions'"
                     type="application/pdf"
                   />
                   <!-- <q-input outlined v-model="text" :dense="dense" /> -->
@@ -207,6 +215,7 @@ export default defineComponent({
   name: 'IndexPage',
   setup () {
     return {
+      dropzoneURL2: ref(""),
       outputText: ref(""),
       computed: ref(false),
       inputMode: ref("edit"),
@@ -505,6 +514,22 @@ export default defineComponent({
           })
           .then((response) => {
             this.inputLetter = response.data["pdf_text"];
+            api.post("return_pdf", uploadForm, {
+              headers: {
+                "Accept": "application/pdf",
+              },
+              responseType: 'blob'
+            })
+              .then((response) => {
+                // this.inputMode = 'regions'
+                  var blob = new Blob([response.data], {
+                    type: 'application/pdf'
+                  });
+                  this.dropzoneURL2 = URL.createObjectURL(blob)
+              })
+              .catch((error) => {
+                console.log(error.message);
+              });
           })
           .catch((error) => {
             console.log(error.message);
